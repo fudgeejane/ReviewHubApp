@@ -2,7 +2,7 @@
 
 > 🎥 **Watch this first**: [YouTube Tutorial](https://www.youtube.com/watch?v=sdrqDQAC3Gw&t=1164s)
 > 
-> ""View this link as well**: https://reactnative.dev/docs/environment-setup
+> **View this link as well**: https://reactnative.dev/docs/environment-setup
 
 ---
 
