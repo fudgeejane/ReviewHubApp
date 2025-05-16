@@ -2,11 +2,13 @@ import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import ForgotPasswordModal from '../components/ForgotPasswordModal';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [errors, setErrors] = useState({
     email: '',
     password: '',
@@ -40,11 +42,11 @@ export default function SignIn() {
     try {
       setIsLoading(true);
       // Handle different account types
-      if (email === 'user@example.com' && password === 'user123') {
+      if (email === 'user@email.com' && password === 'user123') {
         router.push('/users/dashboard');
-      } else if (email === 'ins@example.com' && password === 'ins123') {
+      } else if (email === 'ins@email.com' && password === 'ins123') {
         router.push('/instructor/dashboard');
-      } else if (email === 'admin@example.com' && password === 'admin123') {
+      } else if (email === 'admin@email.com' && password === 'admin123') {
         router.push('/admin/dashboard');
       } else {
         Alert.alert('Sign In Failed', 'Invalid email or password');
@@ -102,7 +104,7 @@ export default function SignIn() {
 
           <TouchableOpacity 
             style={styles.forgotPasswordButton} 
-            onPress={() => Alert.alert('Info', 'This feature is not available in demo mode')}
+            onPress={() => setShowForgotPassword(true)}
             disabled={isLoading}
           >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
@@ -126,6 +128,11 @@ export default function SignIn() {
           </View>
         </View>
       </View>
+
+      <ForgotPasswordModal
+        isVisible={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+      />
     </View>
   );
 }

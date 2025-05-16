@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -67,7 +68,22 @@ export default function Dashboard() {
   const renderCoursesList = (courses: Course[], isEnrolled = true) => (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.coursesScroll}>
       {courses.map((course) => (
-        <TouchableOpacity key={course.id} style={styles.courseCard}>
+        <TouchableOpacity 
+          key={course.id} 
+          style={styles.courseCard}
+          onPress={() => {
+            router.push({
+              pathname: '/users/course',
+              params: {
+                id: course.id,
+                title: course.title,
+                subtitle: course.subtitle,
+                instructor: course.instructor,
+                isEnrolled: isEnrolled.toString(),
+              },
+            });
+          }}
+        >
           <Image source={course.image} style={styles.courseImage} />
           <View style={styles.courseInfo}>
             <View style={[styles.badge, isEnrolled ? styles.enrolledBadge : styles.availableBadge]}>

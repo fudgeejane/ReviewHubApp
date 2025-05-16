@@ -13,10 +13,6 @@ export default function UserLayout() {
     />
   );
 
-  const handleSignOut = () => {
-    router.replace('/auth');
-  };
-
   return (
     <Tabs
       screenOptions={{
@@ -100,7 +96,7 @@ export default function UserLayout() {
         listeners={{
           tabPress: (e) => {
             e.preventDefault();
-            handleSignOut();
+            router.push('/users/signout');
           },
         }}
         options={{
@@ -112,6 +108,18 @@ export default function UserLayout() {
       />
       <Tabs.Screen
         name="announcement"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="course"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
         options={{
           href: null,
         }}

@@ -1,21 +1,21 @@
 import {
-    MaterialIcons
+  MaterialIcons
 } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
-    Animated,
-    Dimensions,
-    Image,
-    ImageBackground,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Animated,
+  Dimensions,
+  Image,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
   
   const { width, height } = Dimensions.get('window');
@@ -237,9 +237,7 @@ import {
                   </View>
                 ))}
               </View>
-              <TouchableOpacity style={styles.selectPlanButton}>
-                <Text style={styles.selectPlanButtonText}>Select Plan</Text>
-              </TouchableOpacity>
+             
             </View>
           ))}
         </ScrollView>
