@@ -1,50 +1,65 @@
-# Welcome to your Expo app 👋
+# 📱 React Native App Setup
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> 🎥 **Watch this first**: [YouTube Tutorial](https://www.youtube.com/watch?v=sdrqDQAC3Gw&t=1164s)
+> ""View this link as well**: https://reactnative.dev/docs/environment-setup
 
-## Get started
+---
 
-1. Install dependencies
+## 📦 Install Dependencies
 
-   ```bash
-   npm install
-   ```
+Run the following command to install all required packages:
 
-2. Start the app
+```bash
+npm install @expo/vector-icons @react-navigation/bottom-tabs @react-navigation/elements @react-navigation/native expo expo-blur expo-constants expo-font expo-haptics expo-image expo-linear-gradient expo-linking expo-router expo-splash-screen expo-status-bar expo-symbols expo-system-ui expo-web-browser react react-dom react-native react-native-gesture-handler react-native-material-menu react-native-reanimated react-native-responsive-screen react-native-safe-area-context react-native-screens react-native-web react-native-webview
+```
 
+---
+
+## 🖥️ Run Natively on PC
+
+### ▶️ Android Emulator
+
+1. Start Metro bundler:
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+2. Then run the Android build:
+   ```bash
+   npx expo run:android
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+> ✅ Make sure Android Studio is installed and an emulator is running.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+### 🍏 iOS Simulator (macOS only)
 
-When you're ready, run:
+1. Start Metro bundler:
+   ```bash
+   npx expo start
+   ```
 
-```bash
-npm run reset-project
-```
+2. Then run the iOS build:
+   ```bash
+   npx expo run:ios
+   ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+> ⚠️ Xcode is required to run iOS builds locally.
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📱 Run on Phone Using Expo
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. Install the **Expo Go** app from the App Store or Google Play.
+2. In your terminal, run:
+   ```bash
+   npx expo start
+   ```
+3. Scan the QR code using the Expo Go app on your phone.
 
-## Join the community
+> 📡 Ensure your phone and PC are connected to the same Wi-Fi network.
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Happy coding! 🎉
