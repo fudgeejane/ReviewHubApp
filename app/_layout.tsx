@@ -39,6 +39,7 @@ export default function RootLayout() {
       initialRouteName="auth"
     >
       <Stack.Screen name="auth" />
+      <Stack.Screen name="instructor" />
     </Stack>
   );
 }

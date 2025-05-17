@@ -1,8 +1,9 @@
 import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
+import Loading from '../components/loading';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -41,6 +42,9 @@ export default function SignIn() {
 
     try {
       setIsLoading(true);
+      // Simulate loading time
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       // Handle different account types
       if (email === 'user@email.com' && password === 'user123') {
         router.push('/users/dashboard');
@@ -61,6 +65,7 @@ export default function SignIn() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+      {isLoading && <Loading />}
       <View style={styles.content}>
         <Image 
           source={require('../../assets/images/ReviewHub.png')}
@@ -115,11 +120,7 @@ export default function SignIn() {
             onPress={handleSignIn}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Sign In</Text>
-            )}
+            <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>

@@ -22,21 +22,21 @@ export default function Dashboard() {
       id: 'crim101',
       title: 'CRIM 101',
       subtitle: 'Criminal Jurisprudence & Procedure',
-      instructor: 'Francine Jane',
+      instructor: 'Warren Tabora',
       image: require('../../assets/images/course-law.jpg'),
     },
     {
       id: 'crim202',
       title: 'CRIM 202',
-      subtitle: 'Crim Subject 2',
-      instructor: 'Warren Inastruct',
+      subtitle: 'Law Enforcement Administration',
+      instructor: 'Clyde Padua',
       image: require('../../assets/images/course-law.jpg'),
     },
     {
       id: 'crim102',
       title: 'CRIM 102',
-      subtitle: 'Law Enforcement Administration',
-      instructor: 'Francine Jane',
+      subtitle: 'Criminalistics',
+      instructor: 'Francine Mateo',
       image: require('../../assets/images/course-law.jpg'),
     },
   ];
@@ -66,7 +66,12 @@ export default function Dashboard() {
   ];
 
   const renderCoursesList = (courses: Course[], isEnrolled = true) => (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.coursesScroll}>
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false} 
+      style={styles.coursesScroll}
+      contentContainerStyle={styles.coursesScrollContent}
+    >
       {courses.map((course) => (
         <TouchableOpacity 
           key={course.id} 
@@ -322,15 +327,22 @@ const styles = StyleSheet.create({
     marginBottom: hp('3%'),
   },
   coursesScroll: {
-    paddingHorizontal: wp('5%'),
+    paddingLeft: wp('5%'),
+  },
+  coursesScrollContent: {
+    paddingRight: wp('5%'),
   },
   courseCard: {
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 16,
     width: wp('70%'),
     marginRight: wp('4%'),
     overflow: 'hidden',
-    elevation: 2,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   courseImage: {
     width: '100%',

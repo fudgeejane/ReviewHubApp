@@ -118,6 +118,19 @@ export default function InstructorLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="course"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="course/[id]"
+        options={{
+          href: null,
+        }}
+      />
+
     </Tabs>
   );
 }
