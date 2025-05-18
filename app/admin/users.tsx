@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import React, { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -69,6 +68,23 @@ export default function UsersScreen() {
     </View>
   );
 
+  const RoleFilterButton = ({ role }: { role: string }) => (
+    <TouchableOpacity
+      style={[
+        styles.roleFilterButton,
+        selectedRoleFilter === role && styles.roleFilterButtonActive
+      ]}
+      onPress={() => setSelectedRoleFilter(role)}
+    >
+      <Text style={[
+        styles.roleFilterText,
+        selectedRoleFilter === role && styles.roleFilterTextActive
+      ]}>
+        {role === 'all' ? 'All Roles' : role.charAt(0).toUpperCase() + role.slice(1)}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -95,17 +111,11 @@ export default function UsersScreen() {
           />
         </View>
 
-        <View style={styles.roleFilterContainer}>
-          <Picker
-            selectedValue={selectedRoleFilter}
-            onValueChange={(itemValue) => setSelectedRoleFilter(itemValue)}
-            style={styles.rolePicker}
-          >
-            <Picker.Item label="All Roles" value="all" />
-            <Picker.Item label="Admin" value="admin" />
-            <Picker.Item label="Instructor" value="instructor" />
-            <Picker.Item label="User" value="user" />
-          </Picker>
+        <View style={styles.roleFilters}>
+          <RoleFilterButton role="all" />
+          <RoleFilterButton role="admin" />
+          <RoleFilterButton role="instructor" />
+          <RoleFilterButton role="user" />
         </View>
       </View>
 
@@ -140,18 +150,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: wp('5%'),
-    fontWeight: 'semibold',
+    fontWeight: 'bold',
     color: '#161647',
   },
   filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: hp('2%'),
-    gap: wp('2%'),
+    gap: hp('1.5%'),
   },
   searchContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -168,16 +174,32 @@ const styles = StyleSheet.create({
     height: hp('5%'),
     fontSize: wp('4%'),
   },
-  roleFilterContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    overflow: 'hidden',
-    width: wp('30%'),
+  roleFilters: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: wp('2%'),
   },
-  rolePicker: {
-    height: hp('5%'),
+  roleFilterButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('2%'),
+    gap: wp('1%'),
+  },
+  roleFilterButtonActive: {
+    backgroundColor: '#2196F3',
+  },
+  roleFilterText: {
+    fontSize: wp('3.5%'),
+    color: '#666',
+    fontWeight: '500',
+  },
+  roleFilterTextActive: {
+    color: '#fff',
   },
   addButton: {
     backgroundColor: '#EDF7FF',

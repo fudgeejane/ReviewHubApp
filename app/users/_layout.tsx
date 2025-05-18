@@ -3,7 +3,7 @@ import { Tabs, router } from 'expo-router';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function UserLayout() {
+export default function Layout() {
   const insets = useSafeAreaInsets();
 
   const headerLogo = () => (
@@ -32,19 +32,19 @@ export default function UserLayout() {
         headerRight: () => (
           <View style={styles.headerRightContainer}>
             <TouchableOpacity 
-              onPress={() => router.push('/users/announcement')}
+              onPress={() => router.push('/users/settings')}
               style={styles.iconButton}
             >
               <View style={styles.iconWrapper}>
-                <FontAwesome5 name="bullhorn" size={18} color="#007AFF" />
+                <FontAwesome5 name="cog" size={18} color="#007AFF" />
               </View>
             </TouchableOpacity>
             <TouchableOpacity 
-              onPress={() => router.push('/users/notifications')}
+              onPress={() => router.push('/users/signout')}
               style={styles.iconButton}
             >
               <View style={styles.iconWrapper}>
-                <FontAwesome5 name="bell" size={18} color="#007AFF" />
+                <FontAwesome5 name="sign-out-alt" size={18} color="#007AFF" />
               </View>
             </TouchableOpacity>
           </View>
@@ -82,32 +82,54 @@ export default function UserLayout() {
           tabBarLabel: 'Dashboard',
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="cog" size={20} color={color} />
-          ),
-          tabBarLabel: 'Settings',
-        }}
-      />
-      <Tabs.Screen
-        name="signout"
+       <Tabs.Screen
+        name="announcement"
         listeners={{
           tabPress: (e) => {
             e.preventDefault();
-            router.push('/users/signout');
+            router.push('/users/announcement');
           },
         }}
         options={{
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="sign-out-alt" size={20} color={color} />
+            <FontAwesome5 name="bullhorn" size={20} color={color} />
           ),
-          tabBarLabel: 'Sign Out',
+          tabBarLabel: 'Announcement',
         }}
       />
       <Tabs.Screen
-        name="announcement"
+        name="notifications"
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.push('/users/notifications');
+          },
+        }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="bell" size={20} color={color} />
+          ),
+          tabBarLabel: 'Notifications',
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="comments" size={20} color={color} />
+          ),
+          tabBarLabel: 'Messages',
+        }}
+      />
+     
+       <Tabs.Screen
+        name="signout"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
         options={{
           href: null,
         }}
@@ -119,30 +141,24 @@ export default function UserLayout() {
         }}
       />
       <Tabs.Screen
-        name="notifications"
+        name="course/[id]"
         options={{
           href: null,
         }}
       />
+
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
-  logoImage: {
-    width: 120,
-    height: 50,
-    resizeMode: 'contain',
-    marginLeft: 5,
-  },
   headerRightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 16,
-    gap: 12,
+    paddingRight: 15,
   },
   iconButton: {
-    padding: 4,
+    padding: 8,
   },
   iconWrapper: {
     width: 36,
@@ -151,5 +167,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 122, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoImage: {
+    width: 120,
+    height: 50,
+    resizeMode: 'contain',
+    marginBottom: 8,
   },
 });

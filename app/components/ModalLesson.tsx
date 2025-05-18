@@ -5,8 +5,8 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 interface ModalLessonProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (data: { title: string }) => void;
-  initialData?: { title: string };
+  onSubmit: (data: { title: string; description: string }) => void;
+  initialData?: { title: string; description: string };
   mode?: 'add' | 'edit';
 }
 
@@ -18,12 +18,17 @@ interface DeleteModalProps {
 
 export default function ModalLesson({ visible, onClose, onSubmit, initialData, mode = 'add' }: ModalLessonProps) {
   const [title, setTitle] = useState(initialData?.title || '');
+  const [description, setDescription] = useState(initialData?.description || '');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleSubmit = () => {
     if (title.trim()) {
-      onSubmit({ title: title.trim() });
+      onSubmit({ 
+        title: title.trim(),
+        description: description.trim()
+      });
       setTitle('');
+      setDescription('');
       onClose();
     }
   };
@@ -37,9 +42,9 @@ export default function ModalLesson({ visible, onClose, onSubmit, initialData, m
     >
       <View style={styles.modalOverlay}>
         <View style={styles.deleteModalContent}>
-          <Text style={styles.deleteModalTitle}>Delete Lecture</Text>
+          <Text style={styles.deleteModalTitle}>Delete Lesson</Text>
           <Text style={styles.deleteModalText}>
-            Are you sure you want to delete this lecture? This action cannot be undone.
+            Are you sure you want to delete this Lesson? This action cannot be undone.
           </Text>
           <View style={styles.deleteModalButtons}>
             <TouchableOpacity
@@ -70,16 +75,29 @@ export default function ModalLesson({ visible, onClose, onSubmit, initialData, m
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>
-            {mode === 'add' ? 'Add New Lecture' : 'Edit Lecture'}
+            {mode === 'add' ? 'Add New Lesson' : 'Edit Lesson'}
           </Text>
           
           <TextInput
             style={styles.input}
-            placeholder="Enter lecture title"
+            placeholder="Enter Lesson title"
             value={title}
             onChangeText={setTitle}
             autoFocus
           />
+
+          <TextInput
+            style={[styles.input, styles.descriptionInput]}
+            placeholder="Enter Lesson description"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            numberOfLines={3}
+          />
+
+          <TouchableOpacity style={styles.uploadButton}>
+            <Text style={styles.uploadButtonText}>Upload Files (PDF, Image, Video)</Text>
+          </TouchableOpacity>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -103,7 +121,7 @@ export default function ModalLesson({ visible, onClose, onSubmit, initialData, m
               onPress={handleSubmit}
             >
               <Text style={styles.submitButtonText}>
-                {mode === 'add' ? 'Add Lecture' : 'Save Changes'}
+                {mode === 'add' ? 'Add Lesson' : 'Save Changes'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -216,5 +234,28 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     minWidth: wp('20%'),
     alignItems: 'center',
+  },
+  descriptionInput: {
+    height: hp('15%'),
+    textAlignVertical: 'top',
+    paddingTop: wp('3%'),
+  },
+  uploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: hp('2%'),
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp('4%'),
+    backgroundColor: '#EDF7FF',
+    borderRadius: wp('2%'),
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    borderStyle: 'dashed',
+    alignSelf: 'center',
+  },
+  uploadButtonText: {
+    color: '#2196F3',
+    fontSize: wp('3.5%'),
+    fontWeight: '500',
   },
 }); 

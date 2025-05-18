@@ -32,21 +32,22 @@ export default function AdminLayout() {
         headerRight: () => (
           <View style={styles.headerRightContainer}>
             <TouchableOpacity 
-              onPress={() => router.push('/admin/announcement')}
+              onPress={() => router.push('/admin/settings')}
               style={styles.iconButton}
             >
               <View style={styles.iconWrapper}>
-                <FontAwesome5 name="bullhorn" size={18} color="#007AFF" />
+                <FontAwesome5 name="cog" size={18} color="#007AFF" />
               </View>
             </TouchableOpacity>
             <TouchableOpacity 
-              onPress={() => router.push('/admin/notifications')}
+              onPress={() => router.push('/admin/signout')}
               style={styles.iconButton}
             >
               <View style={styles.iconWrapper}>
-                <FontAwesome5 name="bell" size={18} color="#007AFF" />
+                <FontAwesome5 name="sign-out-alt" size={18} color="#007AFF" />
               </View>
             </TouchableOpacity>
+            
           </View>
         ),
         tabBarStyle: {
@@ -83,49 +84,30 @@ export default function AdminLayout() {
         }}
       />
       <Tabs.Screen
-        name="users"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="users" size={20} color={color} />
-          ),
-          tabBarLabel: 'Users',
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="cog" size={20} color={color} />
-          ),
-          tabBarLabel: 'Settings',
-        }}
-      />
-      
-      <Tabs.Screen
-        name="signout"
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            router.push('/admin/signout');
-          },
-        }}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="sign-out-alt" size={20} color={color} />
-          ),
-          tabBarLabel: 'Sign Out',
-        }}
-      />
-      <Tabs.Screen
         name="announcement"
         options={{
-          href: null,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="bullhorn" size={20} color={color} />
+          ),
+          tabBarLabel: 'Announcements',
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          href: null,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="bell" size={20} color={color} />
+          ),
+          tabBarLabel: 'Notifications',
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="comments" size={20} color={color} />
+          ),
+          tabBarLabel: 'Chat',
         }}
       />
       <Tabs.Screen
@@ -135,31 +117,35 @@ export default function AdminLayout() {
         }}
       />
       <Tabs.Screen
-        name="course/[id]"
+        name="settings"
         options={{
           href: null,
         }}
       />
-
+      <Tabs.Screen
+        name="users"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="signout"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
-  logoImage: {
-    width: 120,
-    height: 50,
-    resizeMode: 'contain',
-    marginLeft: 5,
-  },
   headerRightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 16,
-    gap: 12,
+    paddingRight: 15,
   },
   iconButton: {
-    padding: 4,
+    padding: 8,
   },
   iconWrapper: {
     width: 36,
@@ -168,5 +154,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 122, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoImage: {
+    width: 120,
+    height: 50,
+    resizeMode: 'contain',
+    marginBottom: 8,
   },
 });

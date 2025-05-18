@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -18,7 +19,7 @@ interface SubscriptionPlan {
   features: string[];
 }
 
-export default function SubscriptionManagementScreen() {
+export default function AdminSettingsScreen() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
 
@@ -78,6 +79,32 @@ export default function SubscriptionManagementScreen() {
     Alert.alert('Success', 'Subscription plan updated successfully');
   };
 
+  const renderSettingItem = (
+    icon: string,
+    title: string,
+    subtitle?: string,
+    onPress?: () => void
+  ) => (
+    <TouchableOpacity 
+      style={styles.settingItem}
+      onPress={onPress}
+      disabled={!onPress}
+    >
+      <View style={styles.settingLeft}>
+        <View style={styles.iconWrapper}>
+          <FontAwesome5 name={icon} size={16} color="#007AFF" />
+        </View>
+        <View>
+          <Text style={styles.settingTitle}>{title}</Text>
+          {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
+        </View>
+      </View>
+      {onPress && (
+        <FontAwesome5 name="chevron-right" size={16} color="#8E8E93" />
+      )}
+    </TouchableOpacity>
+  );
+
   const renderSubscriptionPlan = (plan: SubscriptionPlan) => (
     <View key={plan.id} style={styles.planCard}>
       <View style={styles.planHeader}>
@@ -105,10 +132,47 @@ export default function SubscriptionManagementScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      {/* User Management Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>User Management</Text>
+        <View style={styles.settingsGroup}>
+          {renderSettingItem(
+            'users',
+            'Manage Users',
+            'View and manage all users',
+            () => router.push('/admin/users')
+          )}
+         
+        </View>
+      </View>
+
+      {/* Subscription Plans Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Subscription Plans</Text>
         <View style={styles.plansContainer}>
           {subscriptionPlans.map(plan => renderSubscriptionPlan(plan))}
+        </View>
+      </View>
+
+      {/* System Settings Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>System Settings</Text>
+        <View style={styles.settingsGroup}>
+          {renderSettingItem(
+            'bell',
+            'Notification Settings',
+            'Configure system notifications'
+          )}
+          {renderSettingItem(
+            'shield-alt',
+            'Security Settings',
+            'Manage security preferences'
+          )}
+          {renderSettingItem(
+            'database',
+            'Backup Settings',
+            'Configure data backup options'
+          )}
         </View>
       </View>
 
@@ -172,6 +236,39 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#161647',
     marginBottom: 16,
+  },
+  settingsGroup: {
+    backgroundColor: '#fff',
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  settingLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  settingTitle: {
+    fontSize: 16,
+    color: '#161647',
+  },
+  settingSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
   },
   plansContainer: {
     gap: 16,

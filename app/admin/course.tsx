@@ -1,350 +1,205 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import ModalCourse from '../components/ModalCourse';
-import ModalLesson from '../components/ModalLesson';
-import ModalSection from '../components/ModalSection';
-
-interface Lesson {
-  title: string;
-}
 
 interface Section {
+  id: string;
   title: string;
-  lessons: Lesson[];
   isExpanded: boolean;
+  lectures: Lecture[];
+  quiz?: {
+    title: string;
+    attempts: QuizAttempt[];
+    questionCount: number;
+  };
 }
 
-interface DeleteModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
+interface Lecture {
+  id: string;
   title: string;
-  message: string;
 }
 
-const DeleteConfirmationModal = ({ visible, onClose, onConfirm, title, message }: DeleteModalProps) => (
-  <Modal
-    transparent
-    visible={visible}
-    animationType="fade"
-    onRequestClose={onClose}
-  >
-    <View style={styles.modalOverlay}>
-      <View style={styles.deleteModalContent}>
-        <Text style={styles.deleteModalTitle}>{title}</Text>
-        <Text style={styles.deleteModalText}>{message}</Text>
-        <View style={styles.deleteModalButtons}>
-          <TouchableOpacity
-            style={[styles.deleteModalButton, styles.cancelButton]}
-            onPress={onClose}
-          >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.deleteModalButton, styles.deleteButton]}
-            onPress={onConfirm}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  </Modal>
-);
+interface QuizAttempt {
+  studentName: string;
+  score: string;
+  percentage: string;
+}
 
-export default function CourseDetail() {
+export default function CourseScreen() {
   const params = useLocalSearchParams();
-  const router = useRouter();
-  const {
-    id,
-    title,
-    subtitle,
-    instructor,
-  } = params;
-
+  const [activeTab, setActiveTab] = useState('overview');
   const [sections, setSections] = useState<Section[]>([
     {
-      title: "Getting Started",
-      lessons: [
-        { title: "Introduction to the Course" },
-        { title: "Course Overview and Objectives" }
+      id: '1',
+      title: 'Getting Started',
+      isExpanded: true,
+      lectures: [
+        { id: 'l1', title: 'Introduction to the Course' },
+        { id: 'l2', title: 'Course Overview and Objectives' },
       ],
-      isExpanded: true
+      quiz: {
+        title: 'Introduction Quiz',
+        questionCount: 10,
+        attempts: [
+          { studentName: 'Blair Waldorf', score: '4/10', percentage: '40.0%' },
+          { studentName: 'Sarena van der Woodsen', score: '2/10', percentage: '20.0%' },
+        ]
+      }
+    },
+    {
+      id: '2',
+      title: 'Basic Concepts',
+      isExpanded: false,
+      lectures: [
+        { id: 'l3', title: 'Understanding Criminalistics' },
+        { id: 'l4', title: 'Core Principles' },
+      ],
+      quiz: {
+        title: 'Basic Concepts',
+        questionCount: 15,
+        attempts: [
+          { studentName: 'Chuck Bass', score: '3/10', percentage: '30.0%' },
+          { studentName: 'Nate Archibald', score: '9/10', percentage: '90.0%' },
+        ]
+      }
     }
   ]);
-  const [showSectionModal, setShowSectionModal] = useState(false);
-  const [showLessonModal, setShowLessonModal] = useState(false);
-  const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null);
-  const [showDropdown, setShowDropdown] = useState<number | null>(null);
-  const [editingSection, setEditingSection] = useState<{ index: number; data: Section } | null>(null);
-  const [showCourseDropdown, setShowCourseDropdown] = useState(false);
-  const [showCourseModal, setShowCourseModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletingSection, setDeletingSection] = useState<number | null>(null);
-  const [showDeleteCourseModal, setShowDeleteCourseModal] = useState(false);
 
-  const handleAddSection = (data: { title: string }) => {
-    setSections([...sections, { title: data.title, lessons: [], isExpanded: false }]);
-  };
-
-  const handleEditSection = (data: { title: string }) => {
-    if (editingSection !== null) {
-      const updatedSections = [...sections];
-      updatedSections[editingSection.index] = {
-        ...updatedSections[editingSection.index],
-        title: data.title
-      };
-      setSections(updatedSections);
-      setEditingSection(null);
-    }
-  };
-
-  const handleDeleteSection = (index: number) => {
-    setDeletingSection(index);
-    setShowDeleteModal(true);
-    setShowDropdown(null);
-  };
-
-  const confirmDeleteSection = () => {
-    if (deletingSection !== null) {
-      const updatedSections = sections.filter((_, i) => i !== deletingSection);
-      setSections(updatedSections);
-      setShowDeleteModal(false);
-      setDeletingSection(null);
-    }
-  };
-
-  const handleAddLesson = (data: { title: string }) => {
-    if (selectedSectionIndex !== null) {
-      const updatedSections = [...sections];
-      updatedSections[selectedSectionIndex].lessons.push({ title: data.title });
-      setSections(updatedSections);
-    }
-  };
-
-  const toggleSection = (index: number) => {
-    const updatedSections = [...sections];
-    updatedSections[index].isExpanded = !updatedSections[index].isExpanded;
-    setSections(updatedSections);
-  };
-
-  const renderDropdown = (sectionIndex: number) => {
-    if (showDropdown !== sectionIndex) return null;
-
-    return (
-      <View style={styles.dropdownMenu}>
-        <TouchableOpacity 
-          style={styles.dropdownOption}
-          onPress={() => {
-            setEditingSection({ index: sectionIndex, data: sections[sectionIndex] });
-            setShowSectionModal(true);
-            setShowDropdown(null);
-          }}
-        >
-          <Text style={styles.dropdownText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.dropdownOption, styles.deleteOption]}
-          onPress={() => handleDeleteSection(sectionIndex)}
-        >
-          <Text style={[styles.dropdownText, styles.deleteText]}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const renderCourseDropdown = () => {
-    if (!showCourseDropdown) return null;
-
-    return (
-      <View style={styles.courseDropdownMenu}>
-        <TouchableOpacity 
-          style={styles.dropdownOption}
-          onPress={() => {
-            setShowCourseModal(true);
-            setShowCourseDropdown(false);
-          }}
-        >
-          <Text style={styles.dropdownText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.dropdownOption, styles.deleteOption]}
-          onPress={() => {
-            setShowDeleteCourseModal(true);
-            setShowCourseDropdown(false);
-          }}
-        >
-          <Text style={[styles.dropdownText, styles.deleteText]}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    );
+  const toggleSection = (sectionId: string) => {
+    setSections(sections.map(section => 
+      section.id === sectionId 
+        ? { ...section, isExpanded: !section.isExpanded }
+        : section
+    ));
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* Course Header */}
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.titleRow}>
-            <TouchableOpacity 
-              style={styles.backButton} 
-              onPress={() => router.back()}
-            >
-              <Ionicons name="arrow-back" size={24} color="#161647" />
-            </TouchableOpacity>
-            <Text style={styles.courseTitle}>{title}</Text>
-            <TouchableOpacity 
-              style={styles.courseMenuButton}
-              onPress={() => setShowCourseDropdown(!showCourseDropdown)}
-            >
-              <Ionicons name="ellipsis-vertical" size={24} color="#161647" />
-            </TouchableOpacity>
-            {renderCourseDropdown()}
-          </View>
-          <Text style={styles.courseSubtitle}>{subtitle}</Text>
-          <View style={styles.instructorContainer}>
-            <Ionicons name="person-circle-outline" size={20} color="#161647" />
-            <Text style={styles.instructorName}>{instructor}</Text>
-          </View>
+        <Text style={styles.courseTitle}>{params.title}</Text>
+        <Text style={styles.courseSubtitle}>{params.subtitle}</Text>
+        <View style={styles.instructorContainer}>
+          <Ionicons name="person-circle-outline" size={20} color="#666" />
+          <Text style={styles.instructorText}>{params.instructor}</Text>
         </View>
       </View>
 
-      {/* Course Content */}
-      <View style={styles.content}>
-        <View style={styles.contentHeader}>
-          <Text style={styles.contentTitle}>Course Content</Text>
-          <TouchableOpacity 
-            style={styles.addSectionButton}
-            onPress={() => {
-              setEditingSection(null);
-              setShowSectionModal(true);
-            }}
-          >
-            <Ionicons name="add" size={16} color="#2196F3" />
-            <Text style={styles.addSectionText}>Add Section</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Navigation Tabs */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'overview' && styles.activeTab]}
+          onPress={() => setActiveTab('overview')}
+        >
+          <Text style={[styles.tabText, activeTab === 'overview' && styles.activeTabText]}>Overview</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'quizzes' && styles.activeTab]}
+          onPress={() => setActiveTab('quizzes')}
+        >
+          <Text style={[styles.tabText, activeTab === 'quizzes' && styles.activeTabText]}>Quizzes</Text>
+        </TouchableOpacity>
+      </View>
 
-        {sections.map((section, sectionIndex) => (
-          <View key={sectionIndex} style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <TouchableOpacity 
-                style={styles.sectionTitleContainer}
-                onPress={() => toggleSection(sectionIndex)}
-              >
-                <Ionicons 
-                  name={section.isExpanded ? "chevron-down" : "chevron-forward"} 
-                  size={24} 
-                  color="#161647" 
-                />
-                <Text style={styles.sectionTitle}>{section.title}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.sectionMenuButton}
-                onPress={() => setShowDropdown(showDropdown === sectionIndex ? null : sectionIndex)}
-              >
-                <Ionicons name="ellipsis-vertical" size={20} color="#666" />
-              </TouchableOpacity>
-              {renderDropdown(sectionIndex)}
+      <ScrollView style={styles.content}>
+        {activeTab === 'overview' ? (
+          <View style={styles.overviewContainer}>
+            <View style={styles.courseContentHeader}>
+              <Text style={styles.courseContentTitle}>Course Content</Text>
             </View>
 
-            {section.isExpanded && (
-              <View style={styles.lessonsList}>
-                {section.lessons.map((lesson, lessonIndex) => (
-                  <View key={lessonIndex} style={styles.lessonItem}>
-                    <Text style={styles.lessonTitle}>{lesson.title}</Text>
-                  </View>
-                ))}
+            {sections.map((section) => (
+              <View key={section.id} style={styles.sectionContainer}>
                 <TouchableOpacity 
-                  style={styles.addLectureButton}
-                  onPress={() => {
-                    setSelectedSectionIndex(sectionIndex);
-                    setShowLessonModal(true);
-                  }}
+                  style={styles.sectionHeader}
+                  onPress={() => toggleSection(section.id)}
                 >
-                  <Ionicons name="add" size={16} color="#2196F3" />
-                  <Text style={styles.addLectureText}>Add Lecture</Text>
+                  <View style={styles.sectionTitleContainer}>
+                    <Ionicons 
+                      name={section.isExpanded ? "chevron-down" : "chevron-forward"} 
+                      size={20} 
+                      color="#161647" 
+                    />
+                    <Text style={styles.sectionTitle}>{section.title}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.sectionOptionsButton}>
+                    <Ionicons name="ellipsis-vertical" size={20} color="#666" />
+                  </TouchableOpacity>
                 </TouchableOpacity>
+
+                {section.isExpanded && (
+                  <View style={styles.sectionContent}>
+                    {section.lectures.map((lecture) => (
+                      <View key={lecture.id} style={styles.lectureItem}>
+                        <Text style={styles.lectureTitle}>{lecture.title}</Text>
+                      </View>
+                    ))}
+                    <TouchableOpacity style={styles.addLectureButton}>
+                      <Ionicons name="add" size={16} color="#2196F3" />
+                      <Text style={styles.addLectureText}>Add Lecture</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
-            )}
+            ))}
           </View>
-        ))}
-      </View>
+        ) : (
+          <View style={styles.quizzesContainer}>
+            <View style={styles.courseContentHeader}>
+              <Text style={styles.courseContentTitle}>Quizzes</Text>
+            </View>
 
-      {/* Modals */}
-      <ModalSection
-        visible={showSectionModal}
-        onClose={() => {
-          setShowSectionModal(false);
-          setEditingSection(null);
-        }}
-        onSubmit={(data) => {
-          if (editingSection) {
-            handleEditSection(data);
-          } else {
-            handleAddSection(data);
-          }
-          setShowSectionModal(false);
-        }}
-        mode={editingSection ? 'edit' : 'add'}
-        initialData={editingSection?.data ? { title: editingSection.data.title } : undefined}
-      />
+            {sections.map((section) => (
+              <View key={section.id} style={styles.sectionContainer}>
+                <TouchableOpacity 
+                  style={styles.sectionHeader}
+                  onPress={() => toggleSection(section.id)}
+                >
+                  <View style={styles.sectionTitleContainer}>
+                    <Ionicons 
+                      name={section.isExpanded ? "chevron-down" : "chevron-forward"} 
+                      size={20} 
+                      color="#161647" 
+                    />
+                    <Text style={styles.sectionTitle}>{section.title}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.sectionOptionsButton}>
+                    <Ionicons name="ellipsis-vertical" size={20} color="#666" />
+                  </TouchableOpacity>
+                </TouchableOpacity>
 
-      <ModalLesson
-        visible={showLessonModal}
-        onClose={() => {
-          setShowLessonModal(false);
-          setSelectedSectionIndex(null);
-        }}
-        onSubmit={(data) => {
-          handleAddLesson(data);
-          setShowLessonModal(false);
-          setSelectedSectionIndex(null);
-        }}
-        mode="add"
-      />
-
-      <ModalCourse
-        visible={showCourseModal}
-        onClose={() => setShowCourseModal(false)}
-        onSubmit={(data) => {
-          // Handle course update
-          setShowCourseModal(false);
-        }}
-        mode="edit"
-        initialData={{
-          courseCode: title as string,
-          courseDescription: subtitle as string,
-        }}
-      />
-
-      {/* Delete Section Confirmation Modal */}
-      <DeleteConfirmationModal
-        visible={showDeleteModal}
-        onClose={() => {
-          setShowDeleteModal(false);
-          setDeletingSection(null);
-        }}
-        onConfirm={confirmDeleteSection}
-        title="Delete Section"
-        message="Are you sure you want to delete this section? This action cannot be undone."
-      />
-
-      {/* Delete Course Confirmation Modal */}
-      <DeleteConfirmationModal
-        visible={showDeleteCourseModal}
-        onClose={() => setShowDeleteCourseModal(false)}
-        onConfirm={() => {
-          setShowDeleteCourseModal(false);
-          router.back();
-        }}
-        title="Delete Course"
-        message="Are you sure you want to delete this course? This action cannot be undone."
-      />
-    </ScrollView>
+                {section.isExpanded && section.quiz && (
+                  <View style={styles.sectionContent}>
+                    <View style={styles.quizInfoContainer}>
+                      <Text style={styles.quizTitle}>{section.quiz.title}</Text>
+                      <Text style={styles.questionCount}>{section.quiz.questionCount} questions</Text>
+                    </View>
+                    
+                    <View style={styles.attemptsSection}>
+                      <Text style={styles.attemptsSectionTitle}>Recent Attempts:</Text>
+                      {section.quiz.attempts.map((attempt, index) => (
+                        <View key={index} style={styles.attemptItem}>
+                          <Text style={styles.studentName}>{attempt.studentName}</Text>
+                          <View style={styles.scoreContainer}>
+                            <Text style={styles.scoreText}>Score: {attempt.score}</Text>
+                            <Text style={[
+                              styles.percentageText,
+                              { color: parseFloat(attempt.percentage) >= 75 ? '#4CAF50' : '#F44336' }
+                            ]}>{attempt.percentage}</Text>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -354,236 +209,188 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    backgroundColor: '#fff',
-    paddingBottom: hp('2%'),
-    marginBottom: hp('2%'),
-  },
-  headerContent: {
     padding: wp('5%'),
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: hp('1%'),
-  },
-  backButton: {
-    marginRight: wp('3%'),
-    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   courseTitle: {
     fontSize: wp('6%'),
     fontWeight: 'bold',
     color: '#161647',
-    flex: 1,
   },
   courseSubtitle: {
     fontSize: wp('4%'),
-    color: '#161647',
-    opacity: 0.8,
-    marginBottom: hp('2%'),
-    marginLeft: wp('9%'),
+    color: '#666',
+    marginTop: hp('0.5%'),
   },
   instructorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: wp('9%'),
+    marginTop: hp('1%'),
   },
-  instructorName: {
-    fontSize: wp('4%'),
-    color: '#161647',
+  instructorText: {
     marginLeft: wp('2%'),
+    fontSize: wp('3.5%'),
+    color: '#666',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingHorizontal: wp('5%'),
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  tab: {
+    paddingVertical: hp('2%'),
+    marginRight: wp('5%'),
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#161647',
+  },
+  tabText: {
+    fontSize: wp('4%'),
+    color: '#666',
+  },
+  activeTabText: {
+    color: '#161647',
+    fontWeight: '600',
   },
   content: {
+    flex: 1,
+  },
+  overviewContainer: {
     padding: wp('5%'),
   },
-  contentHeader: {
+  courseContentHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: hp('2%'),
   },
-  contentTitle: {
+  courseContentTitle: {
     fontSize: wp('5%'),
-    fontWeight: 'semibold',
+    fontWeight: 'bold',
     color: '#161647',
-  },
-  sectionContainer: {
-    marginBottom: hp('2%'),
-    backgroundColor: '#fff',
-    borderRadius: 8,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: wp('4%'),
-  },
-  sectionTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: wp('4.5%'),
-    color: '#161647',
-    marginLeft: wp('2%'),
-  },
-  sectionMenuButton: {
-    padding: wp('2%'),
-  },
-  lessonsList: {
-    paddingHorizontal: wp('4%'),
-    paddingBottom: wp('4%'),
-  },
-  lessonItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: hp('1.5%'),
-  },
-  lessonTitle: {
-    fontSize: wp('4%'),
-    color: '#666',
-    marginLeft: wp('8%'),
-  },
-  addLectureButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: hp('1%'),
-    paddingVertical: hp('1%'),
-    paddingHorizontal: wp('2%'),
-    backgroundColor: '#EDF7FF',
-    borderRadius: wp('2%'),
-    borderWidth: 1,
-    borderColor: '#2196F3',
-    borderStyle: 'dashed',
-    alignSelf: 'flex-start',
-    marginLeft: wp('8%'),
-  },
-  addLectureText: {
-    color: '#2196F3',
-    fontSize: wp('3.5%'),
-    marginLeft: wp('1%'),
-    fontWeight: '500',
   },
   addSectionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: hp('1%'),
-    paddingVertical: hp('1%'),
-    paddingHorizontal: wp('2%'),
-    backgroundColor: '#EDF7FF',
-    borderRadius: wp('2%'),
     borderWidth: 1,
-    borderColor: '#2196F3',
     borderStyle: 'dashed',
-    alignSelf: 'flex-start',
-    marginLeft: wp('8%'),
+    borderColor: '#2196F3',
+    borderRadius: 8,
+    paddingHorizontal: wp('3%'),
+    paddingVertical: hp('1%'),
+    backgroundColor: '#EDF7FF',
   },
   addSectionText: {
     color: '#2196F3',
+    marginLeft: wp('1%'),
     fontSize: wp('3.5%'),
+  },
+  sectionContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: hp('2%'),
+    overflow: 'hidden',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: wp('4%'),
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  sectionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: wp('4%'),
+    color: '#161647',
+    marginLeft: wp('2%'),
     fontWeight: '500',
   },
-  dropdownMenu: {
-    position: 'absolute',
-    top: '100%',
-    right: 0,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    minWidth: wp('25%'),
-    zIndex: 1000,
-  },
-  dropdownOption: {
-    padding: wp('3%'),
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  deleteOption: {
-    borderBottomWidth: 0,
-  },
-  dropdownText: {
-    fontSize: wp('3.5%'),
-    color: '#333',
-  },
-  deleteText: {
-    color: '#FF3B30',
-  },
-  courseMenuButton: {
+  sectionOptionsButton: {
     padding: wp('2%'),
-    marginLeft: wp('2%'),
   },
-  courseDropdownMenu: {
-    position: 'absolute',
-    top: '100%',
-    right: wp('2%'),
-    backgroundColor: 'white',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    minWidth: wp('25%'),
-    zIndex: 1000,
+  sectionContent: {
+    padding: wp('4%'),
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
+  lectureItem: {
+    paddingVertical: hp('1%'),
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  lectureTitle: {
+    fontSize: wp('3.5%'),
+    color: '#161647',
+  },
+  addLectureButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginTop: hp('2%'),
+    alignSelf: 'flex-start',
   },
-  deleteModalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+  addLectureText: {
+    color: '#2196F3',
+    marginLeft: wp('1%'),
+    fontSize: wp('3.5%'),
+  },
+  quizzesContainer: {
     padding: wp('5%'),
-    width: wp('80%'),
-    maxWidth: 400,
   },
-  deleteModalTitle: {
+  quizInfoContainer: {
+    marginBottom: hp('2%'),
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: hp('2%'),
+  },
+  quizTitle: {
     fontSize: wp('4.5%'),
     fontWeight: 'bold',
-    color: '#FF3B30',
-    marginBottom: hp('1%'),
+    color: '#161647',
+    marginBottom: hp('0.5%'),
   },
-  deleteModalText: {
+  questionCount: {
     fontSize: wp('3.5%'),
-    color: '#666',
+    color: '#2196F3',
+  },
+  attemptsSection: {
+    backgroundColor: '#fff',
+    padding: wp('4%'),
+    borderRadius: 8,
+  },
+  attemptsSectionTitle: {
+    fontSize: wp('4%'),
+    fontWeight: '600',
+    color: '#161647',
     marginBottom: hp('2%'),
   },
-  deleteModalButtons: {
+  attemptItem: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: wp('2%'),
-  },
-  deleteModalButton: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: hp('1%'),
-    paddingHorizontal: wp('4%'),
-    borderRadius: 8,
-    minWidth: wp('20%'),
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  studentName: {
+    fontSize: wp('3.5%'),
+    color: '#161647',
+  },
+  scoreContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  cancelButton: {
-    backgroundColor: '#EDF7FF',
+  scoreText: {
+    fontSize: wp('3.5%'),
+    color: '#666',
+    marginRight: wp('2%'),
   },
-  cancelButtonText: {
-    color: '#2196F3',
-    fontWeight: 'bold',
+  percentageText: {
+    fontSize: wp('3.5%'),
+    fontWeight: '600',
   },
-  deleteButton: {
-    backgroundColor: '#FF3B30',
-  },
-  deleteButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-}); 
+});

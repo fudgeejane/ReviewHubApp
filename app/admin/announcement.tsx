@@ -26,10 +26,10 @@ export default function AnnouncementScreen() {
   const [newTitle, setNewTitle] = useState('');
   const [newMessage, setNewMessage] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [selectedTarget, setSelectedTarget] = useState('Free');
+  const [selectedTarget, setSelectedTarget] = useState('All');
   const [showTargetDropdown, setShowTargetDropdown] = useState(false);
 
-  const targetOptions = ['Free', 'Basic Plan', 'Premium Plan'];
+  const targetOptions = ['All Users', 'Free Plan', 'Basic Plan', 'Premium Plan', 'CRIM101', 'CRIM102', 'CRIM103', 'CRIM104', 'CRIM105',];
 
   // Mock announcements data
   const announcements: Announcement[] = [
@@ -38,7 +38,7 @@ export default function AnnouncementScreen() {
       title: 'Midterm Exam Schedule',
       message: 'The midterm exam for CRIM 101 will be held on March 30, 2024.',
       date: 'March 15, 2024',
-      target: 'Free',
+      target: 'Free Plan',
       course: 'CRIM 101'
     },
     {
@@ -48,6 +48,14 @@ export default function AnnouncementScreen() {
       date: 'March 14, 2024',
       target: 'Premium Plan',
       course: 'Case Study'
+    },
+    {
+      id: '3',
+      title: 'Announcement to all users',
+      message: 'This is a test announcement to all users',
+      date: 'May 18, 2025',
+      target: 'All Users',
+      course: 'All'
     },
   ];
 
@@ -69,12 +77,11 @@ export default function AnnouncementScreen() {
     <View key={announcement.id} style={styles.announcementItem}>
       <View style={styles.announcementHeader}>
         <Text style={styles.announcementTitle}>{announcement.title}</Text>
-        <View style={styles.tagsContainer}>
-         
-          <Text style={[styles.courseTag, styles.targetTag]}>{announcement.target}</Text>
-        </View>
       </View>
       <Text style={styles.announcementMessage}>{announcement.message}</Text>
+      <View style={styles.tagsContainer}>
+        <Text style={[styles.courseTag, styles.targetTag]}>{announcement.target}</Text>
+      </View>
       <Text style={styles.announcementDate}>{announcement.date}</Text>
     </View>
   );
@@ -82,15 +89,18 @@ export default function AnnouncementScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      
         <Text style={styles.headerTitle}>Announcements</Text>
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <FontAwesome5 name="plus" size={20} color="#007AFF" />
-        </TouchableOpacity>
       </View>
+
+      <TouchableOpacity
+        style={styles.createButtonContainer}
+        onPress={() => setModalVisible(true)}
+      >
+        <View style={styles.createButtonContent}>
+          <FontAwesome5 name="plus" size={20} color="#007AFF" />
+          <Text style={styles.createButtonText}>Create Announcement</Text>
+        </View>
+      </TouchableOpacity>
 
       <ScrollView style={styles.announcementsList}>
         {announcements.map(renderAnnouncement)}
@@ -184,27 +194,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
+    paddingVertical: 21,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
-  backButton: {
-    padding: 8,
-  },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#161647',
+    color: '#161647'
   },
-  createButton: {
-    padding: 8,
+  createButtonContainer: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  createButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  createButtonText: {
+    fontSize: 16,
+    color: '#007AFF',
+    fontWeight: '500',
   },
   announcementsList: {
     flex: 1,
   },
   announcementItem: {
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     borderRadius: 8,
@@ -221,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   announcementTitle: {
     fontSize: 16,
@@ -299,11 +321,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-  createButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
   targetContainer: {
     marginBottom: 16,
     position: 'relative',
@@ -359,6 +376,8 @@ const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: 'row',
     gap: 8,
+    marginBottom: 8,
+    marginTop: 4,
   },
   targetTag: {
     backgroundColor: '#E8F5E9',

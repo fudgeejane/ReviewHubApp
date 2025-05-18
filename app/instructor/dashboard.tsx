@@ -72,7 +72,7 @@ export default function InstructorDashboard() {
         <View style={styles.activeSessionBadge}>
           <Text style={styles.activeSessionText}>Instructor</Text>
         </View>
-        <Text style={styles.welcomeTitle}>Welcome back, Maem Sammy!</Text>
+        <Text style={styles.welcomeTitle}>Welcome back, Maem!</Text>
         <Text style={styles.welcomeSubtitle}>Manage your courses and students</Text>
         <View style={styles.timeInfo}>
           <Ionicons name="calendar-outline" size={16} color="#fff" />
@@ -237,10 +237,16 @@ const styles = StyleSheet.create({
   addSectionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E3F2FD',
-    paddingHorizontal: wp('3%'),
+    marginTop: hp('1%'),
     paddingVertical: hp('1%'),
-    borderRadius: 8,
+    paddingHorizontal: wp('2%'),
+    backgroundColor: '#EDF7FF',
+    borderRadius: wp('2%'),
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    borderStyle: 'dashed',
+    alignSelf: 'flex-start',
+    marginLeft: wp('8%'),
   },
   addSectionText: {
     color: '#2196F3',

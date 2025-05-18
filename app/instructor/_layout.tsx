@@ -32,19 +32,19 @@ export default function InstructorLayout() {
         headerRight: () => (
           <View style={styles.headerRightContainer}>
             <TouchableOpacity 
-              onPress={() => router.push('/instructor/announcement')}
+              onPress={() => router.push('/instructor/settings')}
               style={styles.iconButton}
             >
               <View style={styles.iconWrapper}>
-                <FontAwesome5 name="bullhorn" size={18} color="#007AFF" />
+                <FontAwesome5 name="cog" size={18} color="#007AFF" />
               </View>
             </TouchableOpacity>
             <TouchableOpacity 
-              onPress={() => router.push('/instructor/notifications')}
+              onPress={() => router.push('/instructor/signout')}
               style={styles.iconButton}
             >
               <View style={styles.iconWrapper}>
-                <FontAwesome5 name="bell" size={18} color="#007AFF" />
+                <FontAwesome5 name="sign-out-alt" size={18} color="#007AFF" />
               </View>
             </TouchableOpacity>
           </View>
@@ -82,38 +82,54 @@ export default function InstructorLayout() {
           tabBarLabel: 'Dashboard',
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="cog" size={20} color={color} />
-          ),
-          tabBarLabel: 'Settings',
-        }}
-      />
-      <Tabs.Screen
-        name="signout"
+       <Tabs.Screen
+        name="announcement"
         listeners={{
           tabPress: (e) => {
             e.preventDefault();
-            router.push('/instructor/signout');
+            router.push('/instructor/announcement');
           },
         }}
         options={{
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="sign-out-alt" size={20} color={color} />
+            <FontAwesome5 name="bullhorn" size={20} color={color} />
           ),
-          tabBarLabel: 'Sign Out',
+          tabBarLabel: 'Announcement',
         }}
       />
       <Tabs.Screen
-        name="announcement"
+        name="notifications"
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.push('/instructor/notifications');
+          },
+        }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="bell" size={20} color={color} />
+          ),
+          tabBarLabel: 'Notifications',
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="comments" size={20} color={color} />
+          ),
+          tabBarLabel: 'Messages',
+        }}
+      />
+     
+       <Tabs.Screen
+        name="signout"
         options={{
           href: null,
         }}
       />
       <Tabs.Screen
-        name="notifications"
+        name="settings"
         options={{
           href: null,
         }}
@@ -136,20 +152,13 @@ export default function InstructorLayout() {
 }
 
 const styles = StyleSheet.create({
-  logoImage: {
-    width: 120,
-    height: 50,
-    resizeMode: 'contain',
-    marginLeft: 5,
-  },
   headerRightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 16,
-    gap: 12,
+    paddingRight: 15,
   },
   iconButton: {
-    padding: 4,
+    padding: 8,
   },
   iconWrapper: {
     width: 36,
@@ -158,5 +167,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 122, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoImage: {
+    width: 120,
+    height: 50,
+    resizeMode: 'contain',
+    marginBottom: 8,
   },
 });

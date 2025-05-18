@@ -64,15 +64,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
+    paddingVertical: 21,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#e0e0e0',
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'semibold',
-    color: '#161647',
+    fontWeight: 'bold',
+    color: '#161647'
   },
   headerSubtitle: {
     fontSize: wp('3.5%'),

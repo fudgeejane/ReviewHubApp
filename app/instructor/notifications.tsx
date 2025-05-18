@@ -107,19 +107,20 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
+    paddingVertical: 21,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
-  backButton: {
-    padding: 8,
-  },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#161647',
-    marginLeft: 16,
+    color: '#161647'
+  },
+  backButton: {
+    padding: 8,
   },
   notificationsList: {
     flex: 1,

@@ -9,6 +9,7 @@ import ModalSection from '../components/ModalSection';
 
 interface Lesson {
   title: string;
+  description: string;
 }
 
 interface Section {
@@ -69,8 +70,8 @@ export default function CourseDetail() {
     {
       title: "Getting Started",
       lessons: [
-        { title: "Introduction to the Course" },
-        { title: "Course Overview and Objectives" }
+        { title: "Introduction to the Course", description: "" },
+        { title: "Course Overview and Objectives", description: "" }
       ],
       isExpanded: true
     }
@@ -117,10 +118,13 @@ export default function CourseDetail() {
     }
   };
 
-  const handleAddLesson = (data: { title: string }) => {
+  const handleAddLesson = (data: { title: string; description: string }) => {
     if (selectedSectionIndex !== null) {
       const updatedSections = [...sections];
-      updatedSections[selectedSectionIndex].lessons.push({ title: data.title });
+      updatedSections[selectedSectionIndex].lessons.push({ 
+        title: data.title,
+        description: data.description
+      });
       setSections(updatedSections);
     }
   };
@@ -259,14 +263,14 @@ export default function CourseDetail() {
                   </View>
                 ))}
                 <TouchableOpacity 
-                  style={styles.addLectureButton}
+                  style={styles.addLessonButton}
                   onPress={() => {
                     setSelectedSectionIndex(sectionIndex);
                     setShowLessonModal(true);
                   }}
                 >
                   <Ionicons name="add" size={16} color="#2196F3" />
-                  <Text style={styles.addLectureText}>Add Lecture</Text>
+                  <Text style={styles.addLessonText}>Add Lesson</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -444,7 +448,7 @@ const styles = StyleSheet.create({
     color: '#666',
     marginLeft: wp('8%'),
   },
-  addLectureButton: {
+  addLessonButton: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: hp('1%'),
@@ -458,7 +462,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: wp('8%'),
   },
-  addLectureText: {
+  addLessonText: {
     color: '#2196F3',
     fontSize: wp('3.5%'),
     marginLeft: wp('1%'),
