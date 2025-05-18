@@ -58,8 +58,8 @@ export default function SignUp() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // For demo purposes, always succeed
-      router.push('/users/dashboard');
+      // Navigate to membership page instead of dashboard
+      router.push('/subscription/membership');
     } catch (error) {
       Alert.alert('Sign Up Failed', 'An error occurred during sign up');
     } finally {

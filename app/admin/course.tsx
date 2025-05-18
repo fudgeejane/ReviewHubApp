@@ -124,9 +124,6 @@ export default function CourseScreen() {
                     />
                     <Text style={styles.sectionTitle}>{section.title}</Text>
                   </View>
-                  <TouchableOpacity style={styles.sectionOptionsButton}>
-                    <Ionicons name="ellipsis-vertical" size={20} color="#666" />
-                  </TouchableOpacity>
                 </TouchableOpacity>
 
                 {section.isExpanded && (
@@ -136,10 +133,7 @@ export default function CourseScreen() {
                         <Text style={styles.lectureTitle}>{lecture.title}</Text>
                       </View>
                     ))}
-                    <TouchableOpacity style={styles.addLectureButton}>
-                      <Ionicons name="add" size={16} color="#2196F3" />
-                      <Text style={styles.addLectureText}>Add Lecture</Text>
-                    </TouchableOpacity>
+                  
                   </View>
                 )}
               </View>
@@ -211,6 +205,11 @@ const styles = StyleSheet.create({
   header: {
     padding: wp('5%'),
     backgroundColor: '#fff',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   courseTitle: {
     fontSize: wp('6%'),
@@ -259,7 +258,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   overviewContainer: {
+    flex: 1,
     padding: wp('5%'),
+    minHeight: hp('100%'),
   },
   courseContentHeader: {
     flexDirection: 'row',
@@ -293,6 +294,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: hp('2%'),
     overflow: 'hidden',
+    flex: 1,
+    minHeight: hp('20%'),
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -317,6 +325,8 @@ const styles = StyleSheet.create({
   },
   sectionContent: {
     padding: wp('4%'),
+    flex: 1,
+    backgroundColor: '#fff',
   },
   lectureItem: {
     paddingVertical: hp('1%'),
@@ -339,7 +349,9 @@ const styles = StyleSheet.create({
     fontSize: wp('3.5%'),
   },
   quizzesContainer: {
+    flex: 1,
     padding: wp('5%'),
+    minHeight: hp('100%'),
   },
   quizInfoContainer: {
     marginBottom: hp('2%'),

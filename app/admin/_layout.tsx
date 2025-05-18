@@ -107,7 +107,7 @@ export default function AdminLayout() {
           tabBarIcon: ({ color }) => (
             <FontAwesome5 name="comments" size={20} color={color} />
           ),
-          tabBarLabel: 'Chat',
+          tabBarLabel: 'Messages',
         }}
       />
       <Tabs.Screen
